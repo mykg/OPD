@@ -23,7 +23,11 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ProfileActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+        </intent-filter>
+        </activity>
         <activity android:name=".ForgotPasswordActivity"
             android:screenOrientation="portrait" />
     </application>
