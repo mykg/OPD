@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -54,6 +55,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                                 if(task.isSuccessful()){
                                     Toast.makeText(ForgotPasswordActivity.this,
                                             "Password send to your email", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(ForgotPasswordActivity.this, LoginActivity.class));
                                 }else{
                                     Toast.makeText(ForgotPasswordActivity.this,
                                             task.getException().getMessage(), Toast.LENGTH_LONG).show();
