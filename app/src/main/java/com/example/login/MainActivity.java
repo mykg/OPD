@@ -3,6 +3,7 @@ package com.example.login;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +20,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 //import android.widget.Toolbar;
 
@@ -38,11 +41,14 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
 
+    DatabaseReference databseUser;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        databseUser = FirebaseDatabase.getInstance().getReference("userx");
 
         FirebaseAuth firebaseauth = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = firebaseauth.getCurrentUser();
@@ -69,6 +75,26 @@ public class MainActivity extends AppCompatActivity {
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                String name = fullname.getText().toString();
+                String aadhar = aadharno.getText().toString();
+                String phn = phone.getText().toString();
+                String add = address.getText().toString();
+                String passwd = password.getText().toString();
+                String mail = email.getText().toString();
+                if(!TextUtils.isEmpty(name)&&!TextUtils.isEmpty(aadhar)&&!TextUtils.isEmpty(phn)&&!TextUtils.isEmpty(add)
+                        &&!TextUtils.isEmpty(passwd)&&!TextUtils.isEmpty(mail)){
+
+                    String idx = databseUser.getKey();
+
+                    user User = new user(idx,name,aadhar,phn,add,passwd,mail);
+
+                    databseUser.child(aadhar).setValue(User);
+
+                    Toast.makeText(MainActivity.this,"Added",Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(MainActivity.this,"Field is empty",Toast.LENGTH_LONG).show();
+                }
                 progressBar.setVisibility(View.VISIBLE);
                 firebaseAuth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
