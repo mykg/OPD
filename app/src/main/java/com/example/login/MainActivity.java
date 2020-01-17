@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import com.example.login.User;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -19,6 +20,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot; // to read data from json of firebase
+import com.google.firebase.database.FirebaseDatabase; //for getting DB instance reference
+import com.google.firebase.database.DatabaseReference; // same^
 
 //import android.widget.Toolbar;
 
@@ -38,11 +42,15 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
 
+    DatabaseReference usrRef; //object of this class for reference creation
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        usrRef = FirebaseDatabase.getInstance().getReference("user"); //instance of database of opd-app
+
 
         FirebaseAuth firebaseauth = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = firebaseauth.getCurrentUser();
@@ -75,6 +83,13 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressBar.setVisibility(View.GONE);
                         if(task.isSuccessful()){
+
+                            // User class object for structure of database
+                            User usr = new User(fullname.getText().toString(),email.getText().toString(),password.getText().toString(),phone.getText().toString(),address.getText().toString(),aadharno.getText().toString());
+
+                            //this adds data to json file on firebase
+                            usrRef.child(aadharno.getText().toString()).setValue(usr);
+
                             Toast.makeText(MainActivity.this,"Registered Successfully",
                                     Toast.LENGTH_LONG).show();
                             fullname.getText().clear();
@@ -91,6 +106,9 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
+
+        DatabaseReference var;
+        var = FirebaseDatabase.getInstance().getReference();
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
